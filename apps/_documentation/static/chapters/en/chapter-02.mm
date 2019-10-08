@@ -124,7 +124,7 @@ from py4web import request
 
 @action('paint')
 def paint():
-    if 'color' in request.query
+    if 'color' in request.query:
        return 'Paining in %s' % request.query.get('color')
     return 'You did not specify a color'
 ``:python
