@@ -15,11 +15,12 @@ PY4WEB comes with some pre-defined fixtures for actions that need sessions, data
 PY4WEB, by default uses the yatl template language and provides a fixture for it.
 
 ``
-from py4web import action, Template
+from py4web import action 
+from py4web.core import Template
 
 @action('index')
 @action.uses(Template('index.html', delimiters='[[ ]]')
-def index() return dict()
+def index(): return dict()
 ``:python
 
 The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Jinja2.
