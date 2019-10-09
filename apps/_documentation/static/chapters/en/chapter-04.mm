@@ -143,13 +143,14 @@ We leave to you as an exercise to implement expiration, limit the number of file
 Here is an example of usage:
 
 ``
+import os
 from py4web import action, Translator
 T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
 T = Translator(T_FOLDER)
 
 @action('index')
 @action.uses(T)
-def index(): return T('Hello world')
+def index(): return str(T('Hello world'))
 ``:python
 
 The string 'hello world` will be translated based on the internationalization file in the specified "translations" folder that best matches the HTTP ``accept-language`` header.
@@ -159,6 +160,7 @@ Here ``Translator`` is a py4web class that extends ``pluralize.Translator`` and 
 We can easily combine multiple fixtures. Here, as example, we make action with a counter that counts "visits".
 
 ``
+import os
 from py4web import action, Session, Translator, DAL
 from py4web.utils.dbstore import DBStore
 db = DAL('sqlite:memory')
@@ -172,7 +174,7 @@ def index():
     counter = session.get('counter', -1)
     counter +- 1
     session['counter'] = counter
-    return T("You have been here {n} times").format(n=counter)
+    return str(T("You have been here {n} times")).format(n=counter)
 ``:python
 
 Now create the following translation file ``translations/en.json``:
@@ -236,7 +238,7 @@ db.commit()
 @action.uses(db)
 def index():
     client_ip = request.environ.get('REMOTE_ADDR')
-    db.visit_log.insert(client_ip=client_id, timestamp=datetime.utcnow())
+    db.visit_log.insert(client_ip=client_ip, timestamp=datetime.utcnow())
     return "Your visit was stored in database"
 ``:python
 
@@ -256,7 +258,6 @@ def index():
     db.thing.name.writable = True
     form = Form(db.thing)
     return dict(form=form)
-)
 ``:python
 
 The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attributes of ``db.{table}.{field}`` are special objects of class ``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These objects are very much like Python thread local objects but they are re-initialized at every request using the value specified outside of the action. This means that actions can safely change the values of these attributes.
